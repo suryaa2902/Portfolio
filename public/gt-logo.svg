@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" rx="6" fill="#003057"/>
+  <rect x="4" y="4" width="192" height="192" rx="4" fill="none" stroke="#B3A369" stroke-width="2" opacity="0.35"/>
+  <text x="100" y="78" font-family="Georgia, 'Times New Roman', serif" font-size="56" font-weight="bold" fill="#B3A369" text-anchor="middle" dominant-baseline="middle">G</text>
+  <line x1="28" y1="102" x2="172" y2="102" stroke="#B3A369" stroke-width="1.5" opacity="0.35"/>
+  <text x="100" y="148" font-family="Georgia, 'Times New Roman', serif" font-size="56" font-weight="bold" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">T</text>
+</svg>
