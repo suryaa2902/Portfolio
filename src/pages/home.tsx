@@ -31,11 +31,6 @@ export function Home() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="max-w-4xl"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full bg-primary/10 border border-primary/30 text-primary font-mono text-sm">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              SYSTEMS ONLINE
-            </div>
-            
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 text-foreground">
               Suryaa Senthilkumar Shanthi
             </h1>
