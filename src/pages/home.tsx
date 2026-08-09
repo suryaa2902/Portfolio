@@ -377,10 +377,6 @@ export function Home() {
               <p className="text-sm text-muted-foreground leading-relaxed mb-5">
                 Robotics Systems Engineer building autonomous systems that move through the world with precision and purpose.
               </p>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <span className="font-mono text-xs text-primary">AVAILABLE FOR OPPORTUNITIES</span>
-              </div>
             </div>
 
             {/* Quick Nav */}
