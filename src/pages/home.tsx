@@ -422,7 +422,6 @@ export function Home() {
             <p className="font-mono text-xs text-muted-foreground">
               © {new Date().getFullYear()} SURYAA SENTHILKUMAR SHANTHI
             </p>
-            <p className="font-mono text-xs text-muted-foreground">ALL SYSTEMS NOMINAL.</p>
           </div>
         </div>
       </footer>
