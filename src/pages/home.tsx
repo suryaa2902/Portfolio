@@ -924,6 +924,12 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
                 </div>
               ))}
 
+              <blockquote className="border-l-2 border-primary pl-4 py-1 bg-primary/5 rounded-r-sm">
+                <p className="text-sm text-muted-foreground italic leading-relaxed">
+                  "The dual navigation sensor heading solution was the most unconventional decision on the project. A magnetometer is the standard approach for heading without motion, but magnetic interference from motors and metal chassis makes it unreliable in practice. Mounting two sensors at a precisely measured offset turns the vector between their position readings into a clean, interference-free heading estimate with no additional hardware."
+                </p>
+              </blockquote>
+
               {/* Pose Estimation and Localization (EKF) */}
               <div>
                 <p className="text-xs font-mono text-primary mb-2">// POSE_ESTIMATION_AND_LOCALIZATION_(EKF)</p>
@@ -1054,13 +1060,6 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
               <blockquote className="border-l-2 border-primary pl-4 py-1 bg-primary/5 rounded-r-sm">
                 <p className="text-sm text-muted-foreground italic leading-relaxed">
                   "CRC32 and mutex protection guard two different edges of the same problem. CRC32 protects data on its way in, across the physical wire from the outside world. The mutex protects data once it is inside, as it moves between threads running concurrently on the same controller. Between the two, the system can trust its data at every stage, from the moment it lands off the wire to the moment it gets used to make a navigation decision."
-                </p>
-              </blockquote>
-
-              {/* Blockquote */}
-              <blockquote className="border-l-2 border-primary pl-4 py-1 bg-primary/5 rounded-r-sm">
-                <p className="text-sm text-muted-foreground italic leading-relaxed">
-                  "The dual navigation sensor heading solution was the most unconventional decision on the project. A magnetometer is the standard approach for heading without motion, but magnetic interference from motors and metal chassis makes it unreliable in practice. Mounting two sensors at a precisely measured offset turns the vector between their position readings into a clean, interference-free heading estimate with no additional hardware."
                 </p>
               </blockquote>
 
