@@ -107,10 +107,10 @@ export function Home() {
                   title: "Robotics Systems Engineer",
                   date: "May 2025–Present",
                   bullets: [
-                    "Designed and deployed a full autonomous robotics stack in C++ — spanning edge AI integration, multi-sensor fusion, real-time path planning, and closed-loop motion control",
-                    "Implemented EKF-based localization fusing GPS, IMU, and wheel odometry for continuous 3-DOF (position + heading) pose estimation at 30 Hz",
-                    "Architected a low-latency serial communication pipeline between a Jetson Nano vision system and an embedded motor controller with custom protocol design and thread-safe data handling",
-                    "Delivered a fully autonomous system capable of real-time object detection, path replanning, and precise actuation with sub-3 cm positioning accuracy"
+                    "Engineered a real-time autonomous mobile robot platform with EKF-based multi-sensor fusion — dual GPS, IMU, and wheel odometry — for continuous 3-DOF pose estimation, paired with A* grid-based path planning with collision avoidance and a Pure Pursuit controller with adaptive speed ramping",
+                    "Built a heterogeneous compute pipeline linking a Jetson Nano (YOLO-based object detection at 15 Hz) to an ARM embedded controller over a custom CRC32-validated serial protocol, with a high-priority receive thread and mutex-protected shared state for real-time data integrity",
+                    "Designed a multi-stage object acquisition pipeline driven by a non-blocking FSM coordinating optical sensors and a 4-stage actuator system, including hue-based object classification for selective manipulation",
+                    "Currently investigating SLAM-based localization approaches and porting the navigation stack to ROS 2"
                   ],
                   skills: ["C++", "Sensor Fusion", "Autonomous Navigation", "Firmware Design/Debug"]
                 }
