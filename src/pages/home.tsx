@@ -816,7 +816,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
   const metrics = [
     { label: "CODEBASE", value: "7,900+", unit: "lines" },
     { label: "SOURCE MODULES", value: "35", unit: "modules" },
-    { label: "SENSORS FUSED", value: "7", unit: "sensors" },
+    { label: "SENSORS FUSED", value: "5", unit: "sensors" },
     { label: "CONTROL LOOP", value: "30", unit: "Hz" },
     { label: "VISION PIPELINE", value: "15", unit: "Hz" },
     { label: "PATH REPLANNING", value: "<100", unit: "ms" },
@@ -907,7 +907,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
               {[
                 {
                   title: "Overview",
-                  body: "Designed and deployed a full autonomous ground vehicle system at Robolabs. The platform fuses data from GPS, IMU, and monocular camera through an Extended Kalman Filter to produce a robust state estimate. A* path planning computes optimal routes in real time, while a PID controller executes closed-loop motor commands at 30 Hz with <3 cm position tolerance."
+                  body: "Developed and deployed an autonomous navigation stack for Autonomous Mobile Robots (AMRs) at Robolabs. The AMR's Extended Kalman Filter fuses data from onboard navigation sensors, an IMU, and wheel odometry to produce a robust state estimate, while a monocular camera handles live perception of the field. A* path planning computes optimal routes in real time, while a PID controller executes closed-loop motor commands at 30 Hz with <3 cm position tolerance."
                 },
                 {
                   title: "Navigation Stack",
@@ -915,7 +915,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
                 },
                 {
                   title: "Sensor Fusion",
-                  body: "An Extended Kalman Filter fuses 7 sensor streams — dual GPS receivers (for interference-free heading), IMU accelerometer/gyroscope, and wheel encoder odometry. The dual-GPS heading approach was chosen over a magnetometer due to motor and chassis EMI, providing a clean vector-based heading estimate with no additional hardware."
+                  body: "An Extended Kalman Filter fuses 5 sensor streams — 2 navigation sensors (for interference-free heading), 1 IMU, and 2 wheel odometry sensors. This dual-sensor heading approach was chosen over a magnetometer due to motor and chassis EMI, providing a clean vector-based heading estimate with no additional hardware."
                 },
               ].map(({ title, body }) => (
                 <div key={title}>
@@ -928,7 +928,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
               <div>
                 <p className="text-xs font-mono text-primary mb-2">// POSE_ESTIMATION_AND_LOCALIZATION_(EKF)</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  The robot needs to know where it is at all times. It draws on three sources: wheel encoders for odometry, an IMU for heading, and dual GPS receivers for absolute position. None of them are perfect on their own — odometry drifts over time, and GPS readings can bounce off nearby walls and report the wrong location. The Extended Kalman Filter is what combines all three into the best possible position estimate at any given moment.
+                  The AMR needs to know where it is at all times. It draws on three sources: wheel encoders for odometry, an IMU for heading, and dual navigation sensors for absolute position. None of them are perfect on their own — odometry drifts over time, and navigation sensor readings can bounce off nearby walls and report the wrong location. The Extended Kalman Filter is what combines all three into the best possible position estimate at any given moment.
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
@@ -938,7 +938,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
                     { label: "UPDATE QUALITY", value: "≥ 97" },
                     { label: "JUMP REJECT", value: "3 cm" },
                     { label: "OUTLIER REJECT", value: "10 cm" },
-                    { label: "WALL / SINGLE GPS", value: "15x / 10x σ" },
+                    { label: "WALL / SINGLE SENSOR", value: "15x / 10x σ" },
                   ].map(({ label, value }) => (
                     <div key={label} className="bg-background border border-border rounded-sm p-3">
                       <p className="text-[10px] font-mono text-muted-foreground mb-1">{label}</p>
@@ -949,33 +949,33 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">INITIALIZATION</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  On startup the robot has no idea where it is. The filter begins with a rough guess of (0, 0) and sets its confidence matrix P to 10000, effectively saying it knows nothing. Before doing anything else, it waits for both GPS receivers to report a signal quality of 99 or higher, averages their readings, and treats that as the true starting position, with the IMU heading synced to match. P is then reset to a small value that reflects this new confidence.
+                  On startup the AMR has no idea where it is. The filter begins with a rough guess of (0, 0) and sets its confidence matrix P to 10000, effectively saying it knows nothing. Before doing anything else, it waits for both navigation sensors to report a signal quality of 99 or higher, averages their readings, and treats that as the true starting position, with the IMU heading synced to match. P is then reset to a small value that reflects this new confidence.
                 </p>
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">PREDICT STEP</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  From there the filter runs every 10 milliseconds in two steps. The first is prediction: the wheel encoders report how far the robot moved in x and y, and the IMU reports how much it rotated, and both are added directly to the current estimate. This is dead reckoning, essentially closing your eyes and counting your steps. Because odometry is imperfect, P grows slightly every cycle to reflect the uncertainty building up. Heading works differently — the IMU is treated as fully authoritative, so the heading in the state is simply overwritten with the raw IMU reading each cycle rather than filtered.
+                  From there the filter runs every 10 milliseconds in two steps. The first is prediction: the wheel encoders report how far the AMR moved in x and y, and the IMU reports how much it rotated, and both are added directly to the current estimate. This is dead reckoning, essentially closing your eyes and counting your steps. Because odometry is imperfect, P grows slightly every cycle to reflect the uncertainty building up. Heading works differently — the IMU is treated as fully authoritative, so the heading in the state is simply overwritten with the raw IMU reading each cycle rather than filtered.
                 </p>
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">UPDATE STEP</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  The second step folds in a GPS reading, and each receiver is processed independently. A reading only survives if it passes several checks: quality below 97 is ignored outright, a jump of more than 3 cm since the last cycle is treated as signal bounce and ignored, and a reading more than 10 cm from the current estimate is treated as an outlier and ignored. Near a wall, GPS uncertainty is inflated 15 times over to account for reflections, and if only one receiver is reporting, uncertainty is inflated 10 times over since there is no second reading to cross check against.
+                  The second step folds in a navigation sensor reading, and each sensor is processed independently. A reading only survives if it passes several checks: quality below 97 is ignored outright, a jump of more than 3 cm since the last cycle is treated as signal bounce and ignored, and a reading more than 10 cm from the current estimate is treated as an outlier and ignored. Near a wall, navigation sensor uncertainty is inflated 15 times over to account for reflections, and if only one sensor is reporting, uncertainty is inflated 10 times over since there is no second reading to cross check against.
                 </p>
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">THE KALMAN GAIN</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  A reading that survives those checks is folded in through the Kalman Gain, <span className="text-foreground font-mono">K = P / (P + σ²)</span>, which is the core of the whole system. Sigma is the GPS uncertainty, and it dominates the result — an untrustworthy reading with a large sigma collapses K toward zero and barely moves the state, while a trustworthy reading with a small sigma makes K meaningful. P then decides how large the correction is. A lost robot with a large P gets pulled heavily toward the new reading, while a confident robot with a small P only gets nudged slightly to correct for accumulated drift. After each correction P shrinks, since the reading provided new information and the robot is now more certain of its position. Both GPS receivers go through this every cycle, so a good cycle corrects the state twice.
+                  A reading that survives those checks is folded in through the Kalman Gain, <span className="text-foreground font-mono">K = P / (P + σ²)</span>, which is the core of the whole system. Sigma is the navigation sensor uncertainty, and it dominates the result — an untrustworthy reading with a large sigma collapses K toward zero and barely moves the state, while a trustworthy reading with a small sigma makes K meaningful. P then decides how large the correction is. A lost AMR with a large P gets pulled heavily toward the new reading, while a confident AMR with a small P only gets nudged slightly to correct for accumulated drift. After each correction P shrinks, since the reading provided new information and the AMR is now more certain of its position. Both navigation sensors go through this every cycle, so a good cycle corrects the state twice.
                 </p>
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">OUTPUT</p>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  The result — x, y, and heading — is handed to Pure Pursuit every cycle, which uses it to steer the robot along its planned path.
+                  The result — x, y, and heading — is handed to Pure Pursuit every cycle, which uses it to steer the AMR along its planned path.
                 </p>
               </div>
 
               <blockquote className="border-l-2 border-primary pl-4 py-1 bg-primary/5 rounded-r-sm">
                 <p className="text-sm text-muted-foreground italic leading-relaxed">
-                  "The advantage over something simpler, like averaging every sensor equally, is that the filter is dynamic. It does not treat a GPS reading near a wall the same as one in open space, and it does not trust a jumping signal the same as a stable one. Every 10 milliseconds it re-evaluates how much to trust each sensor and adjusts automatically, with no manual switching required."
+                  "The advantage over something simpler, like averaging every sensor equally, is that the filter is dynamic. It does not treat a navigation sensor reading near a wall the same as one in open space, and it does not trust a jumping signal the same as a stable one. Every 10 milliseconds it re-evaluates how much to trust each sensor and adjusts automatically, with no manual switching required."
                 </p>
               </blockquote>
 
@@ -983,7 +983,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
               {[
                 {
                   title: "Vision Pipeline",
-                  body: "YOLOv8 runs on the Jetson Nano GPU at ~15 Hz, detecting up to 6 targets per frame. Bounding box centroids are projected into world coordinates using camera intrinsics and GPS altitude, then serialized over CRC32-validated serial packets to the ARM controller for target approach sequencing."
+                  body: "YOLOv8 runs on the Jetson Nano GPU at ~15 Hz, detecting up to 6 targets per frame. Bounding box centroids are projected into world coordinates using camera intrinsics and navigation sensor altitude, then serialized over CRC32-validated serial packets to the ARM controller for target approach sequencing."
                 },
                 {
                   title: "Communication",
@@ -1002,7 +1002,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">THE PROBLEM</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  The Jetson Nano sends vision data to the ARM embedded controller over a physical serial wire, and that wire runs through the same chassis as the drive motors and other switching electronics. Every one of those components throws off electromagnetic interference when it switches on or off, and that interference can induce small voltage spikes on nearby wires. A spike at the wrong moment flips a bit, a zero becomes a one, and the controller ends up trying to navigate toward coordinates that were never actually sent. The serial link itself has no built in protection against this. Bytes just arrive and get accepted, so without a way to verify the data, corruption would go unnoticed until the robot acted on it.
+                  The Jetson Nano sends vision data to the ARM embedded controller over a physical serial wire, and that wire runs through the same chassis as the drive motors and other switching electronics. Every one of those components throws off electromagnetic interference when it switches on or off, and that interference can induce small voltage spikes on nearby wires. A spike at the wrong moment flips a bit, a zero becomes a one, and the AMR ends up trying to navigate toward coordinates that were never actually sent. The serial link itself has no built in protection against this. Bytes just arrive and get accepted, so without a way to verify the data, corruption would go unnoticed until the AMR acted on it.
                 </p>
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">HOW IT WORKS</p>
@@ -1017,7 +1017,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">A LIGHTER VERSION FOR THE ROBOT TO ROBOT LINK</p>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  The link between partner robots uses a shorter 16 bit version of the same idea, on purpose. That connection runs over a dedicated radio band in a far cleaner electrical environment than a wire sitting next to motor controllers, so the error rate is naturally lower and the lighter checksum is enough. The payoff is a smaller packet, which matters when position updates are going back and forth ten times a second for the whole run.
+                  The link between partner AMRs uses a shorter 16 bit version of the same idea, on purpose. That connection runs over a dedicated radio band in a far cleaner electrical environment than a wire sitting next to motor controllers, so the error rate is naturally lower and the lighter checksum is enough. The payoff is a smaller packet, which matters when position updates are going back and forth ten times a second for the whole run.
                 </p>
               </div>
 
@@ -1037,7 +1037,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">THE PROBLEM</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  The embedded controller runs a real time OS with several threads active at once — a sensor fusion loop refreshing on its own timer, the autonomous driving routine, the high priority vision data receiver, and a display loop. All of them can touch the same position data. If the fusion thread is halfway through updating that data, say it has written the new x coordinate but not yet the new y, and the driving thread reads position at that exact moment, it gets a mix of new and old values that never actually corresponded to a real point in time. The robot ends up steering toward a phantom position, and there is no error message, just quietly wrong numbers driving quietly wrong decisions.
+                  The embedded controller runs a real time OS with several threads active at once — a sensor fusion loop refreshing on its own timer, the autonomous driving routine, the high priority vision data receiver, and a display loop. All of them can touch the same position data. If the fusion thread is halfway through updating that data, say it has written the new x coordinate but not yet the new y, and the driving thread reads position at that exact moment, it gets a mix of new and old values that never actually corresponded to a real point in time. The AMR ends up steering toward a phantom position, and there is no error message, just quietly wrong numbers driving quietly wrong decisions.
                 </p>
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">HOW IT WORKS</p>
@@ -1060,7 +1060,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
               {/* Blockquote */}
               <blockquote className="border-l-2 border-primary pl-4 py-1 bg-primary/5 rounded-r-sm">
                 <p className="text-sm text-muted-foreground italic leading-relaxed">
-                  "The dual GPS heading solution was the most unconventional decision on the project. A magnetometer is the standard approach for heading without motion, but magnetic interference from motors and metal chassis makes it unreliable in practice. Mounting two receivers at a precisely measured offset turns the vector between their position readings into a clean, interference-free heading estimate with no additional hardware."
+                  "The dual navigation sensor heading solution was the most unconventional decision on the project. A magnetometer is the standard approach for heading without motion, but magnetic interference from motors and metal chassis makes it unreliable in practice. Mounting two sensors at a precisely measured offset turns the vector between their position readings into a clean, interference-free heading estimate with no additional hardware."
                 </p>
               </blockquote>
 
