@@ -925,12 +925,26 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
                   title: "Communication",
                   body: "A custom CRC32-protected serial protocol (UART) links the Jetson Nano to the ARM embedded controller. Multi-threaded design decouples vision inference, state estimation, and actuation to avoid pipeline stalls. End-to-end system latency reduced by 40% vs. prior single-threaded architecture."
                 },
+                {
+                  title: "Error Detection",
+                  body: "Every packet crossing that serial link carries a CRC32 checksum, a 32 bit fingerprint computed by treating the payload as one giant binary number and dividing it by a fixed polynomial (0x04C11DB7, the same one used by Ethernet, ZIP files, and PNG images). The sender computes this value and appends it to the packet, and the receiver recomputes it independently and compares the two. A mismatch means the data was corrupted in transit, so the packet gets discarded instead of trusted. Simpler checks like summing or XORing the bytes only catch a subset of errors and miss things like reordered bytes, multi bit bursts, or two errors that happen to cancel each other out. CRC32 catches all of that, missing only about 1 in 4 billion purely random corruptions, which is why it was the standard choice for a link where a bad packet reaching the motor controller was not something to risk."
+                },
               ].map(({ title, body }) => (
                 <div key={title}>
                   <p className="text-xs font-mono text-primary mb-2">// {title.toUpperCase().replace(/ /g, "_")}</p>
                   <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
                 </div>
               ))}
+
+              {/* CRC32 diagram */}
+              <div className="bg-background border border-border rounded-sm p-4">
+                <p className="text-[10px] font-mono text-muted-foreground mb-3">// HOW_A_PACKET_GETS_CHECKED</p>
+                <div className="font-mono text-xs text-muted-foreground space-y-1 text-center">
+                  <p>Data: 0xAA, 0x55, 0xCC, 0x33, payload...</p>
+                  <p className="text-primary">↓ polynomial division</p>
+                  <p className="text-foreground">CRC32 checksum → appended to packet</p>
+                </div>
+              </div>
 
               {/* Blockquote */}
               <blockquote className="border-l-2 border-primary pl-4 py-1 bg-primary/5 rounded-r-sm">
