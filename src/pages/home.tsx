@@ -107,7 +107,7 @@ export function Home() {
                   title: "Robotics Systems Engineer",
                   date: "May 2025–Present",
                   bullets: [
-                    "Engineered a real-time autonomous mobile robot platform with EKF-based multi-sensor fusion — dual navigation sensors, IMU, and wheel odometry — for continuous 3-DOF pose estimation, paired with A* grid-based path planning with collision avoidance and a Pure Pursuit controller with adaptive speed ramping",
+                    "Engineered a real-time autonomous mobile robot platform with EKF-based multi-sensor fusion (dual navigation sensors, IMU, and wheel odometry) for continuous 3-DOF pose estimation, paired with A* grid-based path planning with collision avoidance and a Pure Pursuit controller with adaptive speed ramping",
                     "Built a heterogeneous compute pipeline linking a Jetson Nano (YOLO-based object detection at 15 Hz) to an ARM embedded controller over a custom CRC32-validated serial protocol, with a high-priority receive thread and mutex-protected shared state for real-time data integrity",
                     "Designed a multi-stage object acquisition pipeline driven by a non-blocking FSM coordinating optical sensors and a 4-stage actuator system, including hue-based object classification for selective manipulation",
                     "Currently investigating SLAM-based localization approaches and porting the navigation stack to ROS 2"
@@ -915,7 +915,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
                 },
                 {
                   title: "Sensor Fusion",
-                  body: "An Extended Kalman Filter fuses 5 sensor streams — 2 navigation sensors (for interference-free heading), 1 IMU, and 2 wheel odometry sensors. This dual-sensor heading approach was chosen over a magnetometer due to motor and chassis EMI, providing a clean vector-based heading estimate with no additional hardware."
+                  body: "An Extended Kalman Filter fuses 5 sensor streams: 2 navigation sensors (for interference-free heading), 1 IMU, and 2 wheel odometry sensors. This dual-sensor heading approach was chosen over a magnetometer due to motor and chassis EMI, providing a clean vector-based heading estimate with no additional hardware."
                 },
               ].map(({ title, body }) => (
                 <div key={title}>
@@ -928,7 +928,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
               <div>
                 <p className="text-xs font-mono text-primary mb-2">// POSE_ESTIMATION_AND_LOCALIZATION_(EKF)</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  The AMR needs to know where it is at all times. It draws on three sources: wheel encoders for odometry, an IMU for heading, and dual navigation sensors for absolute position. None of them are perfect on their own — odometry drifts over time, and navigation sensor readings can bounce off nearby walls and report the wrong location. The Extended Kalman Filter is what combines all three into the best possible position estimate at any given moment.
+                  The AMR needs to know where it is at all times. It draws on three sources: wheel encoders for odometry, an IMU for heading, and dual navigation sensors for absolute position. None of them are perfect on their own. Odometry drifts over time, and navigation sensor readings can bounce off nearby walls and report the wrong location. The Extended Kalman Filter is what combines all three into the best possible position estimate at any given moment.
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
@@ -954,7 +954,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">PREDICT STEP</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  From there the filter runs every 10 milliseconds in two steps. The first is prediction: the wheel encoders report how far the AMR moved in x and y, and the IMU reports how much it rotated, and both are added directly to the current estimate. This is dead reckoning, essentially closing your eyes and counting your steps. Because odometry is imperfect, P grows slightly every cycle to reflect the uncertainty building up. Heading works differently — the IMU is treated as fully authoritative, so the heading in the state is simply overwritten with the raw IMU reading each cycle rather than filtered.
+                  From there the filter runs every 10 milliseconds in two steps. The first is prediction: the wheel encoders report how far the AMR moved in x and y, and the IMU reports how much it rotated, and both are added directly to the current estimate. This is dead reckoning, essentially closing your eyes and counting your steps. Because odometry is imperfect, P grows slightly every cycle to reflect the uncertainty building up. Heading works differently: the IMU is treated as fully authoritative, so the heading in the state is simply overwritten with the raw IMU reading each cycle rather than filtered.
                 </p>
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">UPDATE STEP</p>
@@ -964,12 +964,12 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">THE KALMAN GAIN</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  A reading that survives those checks is folded in through the Kalman Gain, <span className="text-foreground font-mono">K = P / (P + σ²)</span>, which is the core of the whole system. Sigma is the navigation sensor uncertainty, and it dominates the result — an untrustworthy reading with a large sigma collapses K toward zero and barely moves the state, while a trustworthy reading with a small sigma makes K meaningful. P then decides how large the correction is. A lost AMR with a large P gets pulled heavily toward the new reading, while a confident AMR with a small P only gets nudged slightly to correct for accumulated drift. After each correction P shrinks, since the reading provided new information and the AMR is now more certain of its position. Both navigation sensors go through this every cycle, so a good cycle corrects the state twice.
+                  A reading that survives those checks is folded in through the Kalman Gain, <span className="text-foreground font-mono">K = P / (P + σ²)</span>, which is the core of the whole system. Sigma is the navigation sensor uncertainty, and it dominates the result: an untrustworthy reading with a large sigma collapses K toward zero and barely moves the state, while a trustworthy reading with a small sigma makes K meaningful. P then decides how large the correction is. A lost AMR with a large P gets pulled heavily toward the new reading, while a confident AMR with a small P only gets nudged slightly to correct for accumulated drift. After each correction P shrinks, since the reading provided new information and the AMR is now more certain of its position. Both navigation sensors go through this every cycle, so a good cycle corrects the state twice.
                 </p>
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">OUTPUT</p>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  The result — x, y, and heading — is handed to Pure Pursuit every cycle, which uses it to steer the AMR along its planned path.
+                  The result, x, y, and heading, is handed to Pure Pursuit every cycle, which uses it to steer the AMR along its planned path.
                 </p>
               </div>
 
@@ -1037,7 +1037,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">THE PROBLEM</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  The embedded controller runs a real time OS with several threads active at once — a sensor fusion loop refreshing on its own timer, the autonomous driving routine, the high priority vision data receiver, and a display loop. All of them can touch the same position data. If the fusion thread is halfway through updating that data, say it has written the new x coordinate but not yet the new y, and the driving thread reads position at that exact moment, it gets a mix of new and old values that never actually corresponded to a real point in time. The AMR ends up steering toward a phantom position, and there is no error message, just quietly wrong numbers driving quietly wrong decisions.
+                  The embedded controller runs a real time OS with several threads active at once: a sensor fusion loop refreshing on its own timer, the autonomous driving routine, the high priority vision data receiver, and a display loop. All of them can touch the same position data. If the fusion thread is halfway through updating that data, say it has written the new x coordinate but not yet the new y, and the driving thread reads position at that exact moment, it gets a mix of new and old values that never actually corresponded to a real point in time. The AMR ends up steering toward a phantom position, and there is no error message, just quietly wrong numbers driving quietly wrong decisions.
                 </p>
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">HOW IT WORKS</p>
@@ -1047,7 +1047,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">WHAT HAPPENS WITHOUT IT</p>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Without the lock, the two threads operate on the same memory with no coordination, and the scheduler has no concept of data consistency. A thread can get interrupted mid write at any point, and whichever thread reads next gets whatever partial state happens to be sitting there. The result is nondeterministic — it might work fine for a while and then fail without warning, and worse, these bugs depend on exact timing that shifts with processor load, so they rarely show up in testing and can appear for the first time when it matters most. The mutex does not just make failures less likely, it removes the entire class of problem.
+                  Without the lock, the two threads operate on the same memory with no coordination, and the scheduler has no concept of data consistency. A thread can get interrupted mid write at any point, and whichever thread reads next gets whatever partial state happens to be sitting there. The result is nondeterministic. It might work fine for a while and then fail without warning, and worse, these bugs depend on exact timing that shifts with processor load, so they rarely show up in testing and can appear for the first time when it matters most. The mutex does not just make failures less likely, it removes the entire class of problem.
                 </p>
               </div>
 
@@ -1159,7 +1159,7 @@ function CVModal({ open, onClose }: { open: boolean; onClose: () => void }) {
                 <iframe
                   src="/resume.pdf#toolbar=0&navpanes=0&scrollbar=1&view=FitH"
                   className="w-full h-full border-0"
-                  title="Suryaa Senthilkumar Shanthi — CV"
+                  title="Suryaa Senthilkumar Shanthi's CV"
                 />
               </div>
             </div>
@@ -1337,7 +1337,7 @@ function OOODetailModal({ open, onClose }: { open: boolean; onClose: () => void 
               <div>
                 <p className="font-mono text-xs text-muted-foreground tracking-widest mb-3">// SCHEDULING POLICIES</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                  The simulator implements two issue policies — <span className="text-foreground">in-order</span> (instructions issue in program order) and <span className="text-foreground">oldest-ready-first</span> (OOO, where the oldest instruction with all operands ready is issued first). These are crossed with two load latency models (1 cycle and 4 cycles) to produce four configurations whose IPC is compared across SPEC2006 workloads.
+                  The simulator implements two issue policies: <span className="text-foreground">in-order</span> (instructions issue in program order) and <span className="text-foreground">oldest-ready-first</span> (OOO, where the oldest instruction with all operands ready is issued first). These are crossed with two load latency models (1 cycle and 4 cycles) to produce four configurations whose IPC is compared across SPEC2006 workloads.
                 </p>
               </div>
 
@@ -1413,7 +1413,7 @@ function OOODetailModal({ open, onClose }: { open: boolean; onClose: () => void 
                   className="inline-flex items-center gap-2 text-sm font-mono text-muted-foreground hover:text-primary transition-colors border border-border hover:border-primary/50 px-4 py-2 rounded-sm"
                 >
                   <Github className="w-4 h-4" />
-                  VIEW_SOURCE — github.com/suryaa2902/Out-of-Order-Pipeline-with-In-Order-Commit
+                  VIEW_SOURCE: github.com/suryaa2902/Out-of-Order-Pipeline-with-In-Order-Commit
                 </a>
               </div>
 
@@ -1585,7 +1585,7 @@ function SRAMDetailModal({ open, onClose }: { open: boolean; onClose: () => void
                   className="inline-flex items-center gap-2 text-sm font-mono text-muted-foreground hover:text-primary transition-colors border border-border hover:border-primary/50 px-4 py-2 rounded-sm"
                 >
                   <Github className="w-4 h-4" />
-                  VIEW_SOURCE — github.com/suryaa2902/512-bit-SRAM
+                  VIEW_SOURCE: github.com/suryaa2902/512-bit-SRAM
                 </a>
               </div>
 
@@ -1748,7 +1748,7 @@ function CacheDetailModal({ open, onClose }: { open: boolean; onClose: () => voi
                   className="inline-flex items-center gap-2 text-sm font-mono text-muted-foreground hover:text-primary transition-colors border border-border hover:border-primary/50 px-4 py-2 rounded-sm"
                 >
                   <Github className="w-4 h-4" />
-                  VIEW_SOURCE — github.com/suryaa2902/Cache-Partitioning-for-Multi-Level-System
+                  VIEW_SOURCE: github.com/suryaa2902/Cache-Partitioning-for-Multi-Level-System
                 </a>
               </div>
 
@@ -1922,7 +1922,7 @@ function PipelineDetailModal({ open, onClose }: { open: boolean; onClose: () => 
                   className="inline-flex items-center gap-2 text-sm font-mono text-muted-foreground hover:text-primary transition-colors border border-border hover:border-primary/50 px-4 py-2 rounded-sm"
                 >
                   <Github className="w-4 h-4" />
-                  C++ SIMULATOR — github.com/suryaa2902/5-Stage-Superscalar-Pipeline
+                  C++ SIMULATOR: github.com/suryaa2902/5-Stage-Superscalar-Pipeline
                 </a>
                 <a
                   href="https://github.com/suryaa2902/Superscalar-Pipeline-in-Verilog"
@@ -1931,7 +1931,7 @@ function PipelineDetailModal({ open, onClose }: { open: boolean; onClose: () => 
                   className="inline-flex items-center gap-2 text-sm font-mono text-muted-foreground hover:text-primary transition-colors border border-border hover:border-primary/50 px-4 py-2 rounded-sm"
                 >
                   <Github className="w-4 h-4" />
-                  VERILOG RTL — github.com/suryaa2902/Superscalar-Pipeline-in-Verilog
+                  VERILOG RTL: github.com/suryaa2902/Superscalar-Pipeline-in-Verilog
                 </a>
               </div>
 
