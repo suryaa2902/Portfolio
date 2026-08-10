@@ -989,16 +989,37 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
                   title: "Communication",
                   body: "A custom CRC32-protected serial protocol (UART) links the Jetson Nano to the ARM embedded controller. Multi-threaded design decouples vision inference, state estimation, and actuation to avoid pipeline stalls. End-to-end system latency reduced by 40% vs. prior single-threaded architecture."
                 },
-                {
-                  title: "Error Detection",
-                  body: "Every packet crossing that serial link carries a CRC32 checksum, a 32 bit fingerprint computed by treating the payload as one giant binary number and dividing it by a fixed polynomial (0x04C11DB7, the same one used by Ethernet, ZIP files, and PNG images). The sender computes this value and appends it to the packet, and the receiver recomputes it independently and compares the two. A mismatch means the data was corrupted in transit, so the packet gets discarded instead of trusted. Simpler checks like summing or XORing the bytes only catch a subset of errors and miss things like reordered bytes, multi bit bursts, or two errors that happen to cancel each other out. CRC32 catches all of that, missing only about 1 in 4 billion purely random corruptions, which is why it was the standard choice for a link where a bad packet reaching the motor controller was not something to risk."
-                },
               ].map(({ title, body }) => (
                 <div key={title}>
                   <p className="text-xs font-mono text-primary mb-2">// {title.toUpperCase().replace(/ /g, "_")}</p>
                   <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
                 </div>
               ))}
+
+              {/* CRC32 Error Detection */}
+              <div>
+                <p className="text-xs font-mono text-primary mb-2">// CRC32_ERROR_DETECTION</p>
+
+                <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">THE PROBLEM</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  The Jetson Nano sends vision data to the ARM embedded controller over a physical serial wire, and that wire runs through the same chassis as the drive motors and other switching electronics. Every one of those components throws off electromagnetic interference when it switches on or off, and that interference can induce small voltage spikes on nearby wires. A spike at the wrong moment flips a bit, a zero becomes a one, and the controller ends up trying to navigate toward coordinates that were never actually sent. The serial link itself has no built in protection against this. Bytes just arrive and get accepted, so without a way to verify the data, corruption would go unnoticed until the robot acted on it.
+                </p>
+
+                <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">HOW IT WORKS</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  CRC32 treats the payload as one large binary number and divides it by a fixed polynomial (0x04C11DB7, the same one used in Ethernet frames, ZIP archives, and PNG files). The sender runs the payload through that division and appends the 4 byte remainder to the packet. The receiver repeats the same calculation on the same bytes and compares its own result to the one that arrived. A match means the data is intact, and any difference, even a single flipped bit, means the packet gets thrown away and the system just waits for the next one. The lookup table the algorithm needs is generated the first time communication starts rather than hardcoded ahead of time, so it only costs memory once the link is actually in use.
+                </p>
+
+                <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">WHY NOT SOMETHING SIMPLER</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  A basic byte sum would catch a single flipped bit, but it has an obvious blind spot: if one bit flips from one to zero somewhere and another flips from zero to one somewhere else, the sum comes out identical and the corruption disappears. A plain XOR has the same weakness. CRC32 does not, because its polynomial structure makes almost any combination of errors, including bursts of consecutive corrupted bits, produce a different result. The odds of a corrupted packet slipping through undetected work out to roughly one in four billion, which is not a risk worth worrying about over the length of a run.
+                </p>
+
+                <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">A LIGHTER VERSION FOR THE ROBOT TO ROBOT LINK</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  The link between partner robots uses a shorter 16 bit version of the same idea, on purpose. That connection runs over a dedicated radio band in a far cleaner electrical environment than a wire sitting next to motor controllers, so the error rate is naturally lower and the lighter checksum is enough. The payoff is a smaller packet, which matters when position updates are going back and forth ten times a second for the whole run.
+                </p>
+              </div>
 
               {/* CRC32 diagram */}
               <div className="bg-background border border-border rounded-sm p-4">
@@ -1009,6 +1030,32 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
                   <p className="text-foreground">CRC32 checksum → appended to packet</p>
                 </div>
               </div>
+
+              {/* Thread Safety / Mutex Protection */}
+              <div>
+                <p className="text-xs font-mono text-primary mb-2">// THREAD_SAFETY_(MUTEX_PROTECTION)</p>
+
+                <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">THE PROBLEM</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  The embedded controller runs a real time OS with several threads active at once — a sensor fusion loop refreshing on its own timer, the autonomous driving routine, the high priority vision data receiver, and a display loop. All of them can touch the same position data. If the fusion thread is halfway through updating that data, say it has written the new x coordinate but not yet the new y, and the driving thread reads position at that exact moment, it gets a mix of new and old values that never actually corresponded to a real point in time. The robot ends up steering toward a phantom position, and there is no error message, just quietly wrong numbers driving quietly wrong decisions.
+                </p>
+
+                <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">HOW IT WORKS</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  A mutex, short for mutual exclusion, is a lock. Any thread that wants to read or write the shared position data has to acquire the lock first, and if another thread already holds it, the requesting thread waits its turn. The fusion thread grabs the lock, reads both sensors, computes a confidence weighted average, updates velocity from the change since the last cycle, and only releases the lock once all of that is done. Anything else that needs the current position, whether that is the navigation logic or the display, has to wait for the lock to free up, which guarantees it always reads a complete, self consistent snapshot rather than a jumbled mix of two different update cycles.
+                </p>
+
+                <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">WHAT HAPPENS WITHOUT IT</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Without the lock, the two threads operate on the same memory with no coordination, and the scheduler has no concept of data consistency. A thread can get interrupted mid write at any point, and whichever thread reads next gets whatever partial state happens to be sitting there. The result is nondeterministic — it might work fine for a while and then fail without warning, and worse, these bugs depend on exact timing that shifts with processor load, so they rarely show up in testing and can appear for the first time when it matters most. The mutex does not just make failures less likely, it removes the entire class of problem.
+                </p>
+              </div>
+
+              <blockquote className="border-l-2 border-primary pl-4 py-1 bg-primary/5 rounded-r-sm">
+                <p className="text-sm text-muted-foreground italic leading-relaxed">
+                  "CRC32 and mutex protection guard two different edges of the same problem. CRC32 protects data on its way in, across the physical wire from the outside world. The mutex protects data once it is inside, as it moves between threads running concurrently on the same controller. Between the two, the system can trust its data at every stage, from the moment it lands off the wire to the moment it gets used to make a navigation decision."
+                </p>
+              </blockquote>
 
               {/* Blockquote */}
               <blockquote className="border-l-2 border-primary pl-4 py-1 bg-primary/5 rounded-r-sm">
