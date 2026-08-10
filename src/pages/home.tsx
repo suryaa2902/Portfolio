@@ -215,35 +215,8 @@ export function Home() {
         <section id="projects" className="py-24 border-t border-border">
           <SectionHeader title="PROJECTS_&_SCHEMATICS" />
 
-          {/* Side-by-side: Personal | Academic */}
-          <div className="mt-12 grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-10 items-start">
-
-            {/* Personal column */}
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <span className="font-mono text-xs text-primary tracking-widest">// PERSONAL</span>
-                <div className="flex-1 h-px bg-border" />
-              </div>
-              <GridProjectCard
-                title="Clutch Simulator"
-                subtitle="Mechanical Systems Simulation"
-                date="Present"
-                description="Interactive clutch mechanism simulator built in HTML/JS. Models real-world clutch engagement physics, slip dynamics, and torque transfer for mechanical systems analysis."
-                tags={["HTML", "JavaScript", "Physics Simulation", "Mechanical Systems"]}
-                githubUrl="https://github.com/suryaa2902/Clutch-Simulator"
-                inProgress
-              />
-            </div>
-
-            {/* Academic column */}
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <span className="w-2 h-2 rounded-full bg-primary" />
-                <span className="font-mono text-xs text-primary tracking-widest">// ACADEMIC</span>
-                <div className="flex-1 h-px bg-border" />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="mt-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <GridProjectCard
                   title="Simulator Enhancements for Krittika"
                   subtitle="Georgia Tech"
@@ -308,8 +281,6 @@ export function Home() {
                   onReadMore={() => window.open("https://github.com/suryaa2902/Pacman", "_blank")}
                 />
               </div>
-            </div>
-
           </div>
         </section>
 
