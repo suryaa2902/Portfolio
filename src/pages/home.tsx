@@ -107,7 +107,7 @@ export function Home() {
                   title: "Robotics Systems Engineer",
                   date: "May 2025–Present",
                   bullets: [
-                    "Engineered a real-time autonomous mobile robot platform with EKF-based multi-sensor fusion — dual GPS, IMU, and wheel odometry — for continuous 3-DOF pose estimation, paired with A* grid-based path planning with collision avoidance and a Pure Pursuit controller with adaptive speed ramping",
+                    "Engineered a real-time autonomous mobile robot platform with EKF-based multi-sensor fusion — dual navigation sensors, IMU, and wheel odometry — for continuous 3-DOF pose estimation, paired with A* grid-based path planning with collision avoidance and a Pure Pursuit controller with adaptive speed ramping",
                     "Built a heterogeneous compute pipeline linking a Jetson Nano (YOLO-based object detection at 15 Hz) to an ARM embedded controller over a custom CRC32-validated serial protocol, with a high-priority receive thread and mutex-protected shared state for real-time data integrity",
                     "Designed a multi-stage object acquisition pipeline driven by a non-blocking FSM coordinating optical sensors and a 4-stage actuator system, including hue-based object classification for selective manipulation",
                     "Currently investigating SLAM-based localization approaches and porting the navigation stack to ROS 2"
