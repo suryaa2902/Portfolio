@@ -909,10 +909,66 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
                   title: "Overview",
                   body: "Developed and deployed an autonomous navigation stack for Autonomous Mobile Robots (AMRs) at Robolabs. The AMR's Extended Kalman Filter fuses data from onboard navigation sensors, an IMU, and wheel odometry to produce a robust state estimate, while a monocular camera handles live perception of the field. A* path planning computes optimal routes in real time, while a PID controller executes closed-loop motor commands at 30 Hz with <3 cm position tolerance."
                 },
-                {
-                  title: "Navigation Stack",
-                  body: "A* path planning runs on the ARM embedded controller, replanning in <100 ms when obstacles are detected. Pure Pursuit translates the path into steering commands. PID loops run at 30 Hz to maintain heading and velocity setpoints, with FSMs managing high-level behavior transitions (idle → navigate → acquire → return)."
-                },
+              ].map(({ title, body }) => (
+                <div key={title}>
+                  <p className="text-xs font-mono text-primary mb-2">// {title.toUpperCase().replace(/ /g, "_")}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+                </div>
+              ))}
+
+              {/* Navigation Stack: A* and Pure Pursuit */}
+              <div>
+                <p className="text-xs font-mono text-primary mb-2">// NAVIGATION_STACK</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  Think of the robot as a person trying to walk across a busy room to grab something on the other side. There are tables, chairs, and walls in the way. Before they even take a single step, they need to figure out a route. That's what A* does. And once they have that route, they need to actually walk it smoothly without bumping into anything. That's what Pure Pursuit does. One plans, the other drives.
+                </p>
+
+                <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">HOW A* FIGURES OUT THE ROUTE</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  The first thing A* does is lay an invisible checkerboard over the entire field. Every square on that checkerboard is either safe to drive through or it isn't. Obstacles of different shapes and sizes get marked as off limits. The robot's own body size is also accounted for, so the boundaries of every obstacle are puffed outward a little to make sure the robot's center never gets too close.
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  Once the grid is ready, A* starts at the robot's current square and begins exploring. It looks at all eight neighbors around it: the squares to the left, right, above, below, and all four diagonals. For each neighbor it calculates a score made of two parts. The first part is how far the robot has already traveled to reach that square. The second part is a straight line guess of how far that square still is from the goal. Adding those two together gives a total score, and A* always picks the square with the lowest total score to explore next.
+                </p>
+
+                <blockquote className="border-l-2 border-primary pl-4 py-1 bg-primary/5 rounded-r-sm mb-4">
+                  <p className="text-sm text-muted-foreground italic leading-relaxed">
+                    "By always choosing the most promising square rather than blindly expanding in every direction, A* finds the shortest path without wasting time on dead ends."
+                  </p>
+                </blockquote>
+
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  Every square that gets explored remembers which square it came from, like leaving a trail of arrows pointing backward. When A* finally reaches the goal square, it follows those arrows all the way back to the start to reconstruct the full route, then flips it so it reads from start to finish.
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  The raw path that comes out of A* is a bit ugly though. Because movement is locked to eight directions on a grid, the path looks like a staircase with sharp 45 and 90 degree corners. To fix this, the path gets smoothed out multiple times by nudging each point slightly toward the average of its two neighbors. Do that enough times and the sharp corners melt into gentle curves. After smoothing, the handful of waypoints gets filled in with densely spaced points every inch or so, giving the robot a very detailed line to follow.
+                </p>
+
+                <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">HOW PURE PURSUIT ACTUALLY DRIVES THE ROBOT</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  Now the robot has a smooth, dense list of points stretching from where it is to where it needs to go. Pure Pursuit takes over from here.
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  The robot draws an invisible circle around itself. The radius of that circle is called the lookahead distance, and it grows slightly when the robot moves faster, similar to how a driver naturally looks further down the road at highway speed versus in a parking lot. Pure Pursuit finds where that circle crosses the path ahead and calls that the lookahead point, the immediate target the robot steers toward.
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  To figure out how to steer, the robot takes the lookahead point and translates it from world coordinates into its own perspective. It asks how far that point is directly in front of it and how far it is to the left or right. The sideways offset tells it how sharply to turn. A big sideways offset means a tight curve is needed. A small one means it's nearly going straight. This gets converted into a curvature value, which then gets split into different speeds for the left and right wheels. To turn right, the left wheels spin faster and the right wheels spin slower. That difference in wheel speed is what steers the robot. The bigger the curvature, the bigger the speed difference.
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  Before the robot starts moving it first spins in place to face roughly toward the path ahead. Then it gently ramps up speed rather than slamming to full throttle, and when it gets close to the destination it gradually brakes to a smooth stop. If extra precision is needed at the end, it can switch to a PID controller to nail the exact final position.
+                </p>
+
+                <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">HOW THE TWO CONNECT</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  A* and Pure Pursuit are two stages of the same pipeline. A* runs first and produces the path, a list of coordinates from where the robot is to where it needs to go, laid out to avoid every obstacle on the field. Pure Pursuit runs second and consumes that path, chasing a moving target point along it every 20 milliseconds until the robot arrives.
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Without A*, the robot would have no path to follow and Pure Pursuit would have nothing to chase. Without Pure Pursuit, the path would just be a list of numbers sitting in memory with no one acting on it. A* is the brain that plans the trip, and Pure Pursuit is the body that actually makes the drive.
+                </p>
+              </div>
+
+              {/* Sections continued */}
+              {[
                 {
                   title: "Sensor Fusion",
                   body: "An Extended Kalman Filter fuses 5 sensor streams: 2 navigation sensors (for interference-free heading), 1 IMU, and 2 wheel odometry sensors. This dual-sensor heading approach was chosen over a magnetometer due to motor and chassis EMI, providing a clean vector-based heading estimate with no additional hardware."
