@@ -259,7 +259,6 @@ export function Home() {
                   description="C++ I2C driver for SparkFun Qwiic ENS160 air quality sensor; LCD display for AQI, CO2, TVOC."
                   tags={["C++", "I2C", "Embedded Systems"]}
                   githubUrl="https://github.com/suryaa2902/Cpp-Driver-for-ENS160"
-                  onReadMore={() => window.open("https://github.com/suryaa2902/Cpp-Driver-for-ENS160", "_blank")}
                 />
                 <GridProjectCard
                   title="Superscalar Pipeline Branch Prediction"
@@ -278,7 +277,6 @@ export function Home() {
                   description="Faithful recreation of the classic Pacman arcade game built in C++. Features ghost AI, collision detection, score tracking, and all classic game mechanics."
                   tags={["C++", "Game Development", "SFML"]}
                   githubUrl="https://github.com/suryaa2902/Pacman"
-                  onReadMore={() => window.open("https://github.com/suryaa2902/Pacman", "_blank")}
                 />
               </div>
           </div>
