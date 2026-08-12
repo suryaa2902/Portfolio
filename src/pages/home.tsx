@@ -352,7 +352,7 @@ export function Home() {
             <div>
               <p className="font-mono text-xs text-muted-foreground tracking-widest mb-4">// NAVIGATE</p>
               <div className="grid grid-cols-2 gap-y-3 gap-x-4">
-                {(["about", "experience", "internships", "projects", "skills"] as const).map((id) => (
+                {(["about", "experience", "internships", "education", "projects", "skills"] as const).map((id) => (
                   <button
                     key={id}
                     onClick={() => { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: "smooth" }); }}

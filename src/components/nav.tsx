@@ -12,6 +12,7 @@ export function Nav({ onContactClick }: { onContactClick?: () => void }) {
     { id: "about", label: "// ABOUT" },
     { id: "experience", label: "// EXPERIENCE" },
     { id: "internships", label: "// INTERNSHIPS" },
+    { id: "education", label: "// EDUCATION" },
     { id: "projects", label: "// PROJECTS" },
     { id: "skills", label: "// SKILLS" },
     { id: "contact", label: "// CONTACT" },
