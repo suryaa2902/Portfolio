@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 import { Home } from "@/pages/home";
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
+import { Analytics } from "@vercel/analytics/react";
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,7 @@ function App() {
         </WouterRouter>
         <Toaster />
       </TooltipProvider>
+      <Analytics />
     </QueryClientProvider>
   );
 }
