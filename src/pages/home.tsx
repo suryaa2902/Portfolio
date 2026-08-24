@@ -815,7 +815,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
     { label: "CODEBASE", value: "7,900+", unit: "lines" },
     { label: "SOURCE MODULES", value: "35", unit: "modules" },
     { label: "SENSORS FUSED", value: "5", unit: "sensors" },
-    { label: "CONTROL LOOP", value: "30", unit: "Hz" },
+    { label: "CONTROL LOOP", value: "15", unit: "Hz" },
     { label: "VISION PIPELINE", value: "15", unit: "Hz" },
     { label: "PATH REPLANNING", value: "<100", unit: "ms" },
     { label: "POSITION TOLERANCE", value: "<3", unit: "cm" },
@@ -889,7 +889,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
                     <div className="border border-primary/30 rounded-sm p-2.5 text-center min-w-[150px]">
                       <p className="text-foreground text-[11px] font-semibold mb-1">ARM Embedded Controller</p>
                       <p className="text-[10px] text-primary">EKF · A* · PID · FSMs</p>
-                      <p className="text-[10px] text-muted-foreground">30 Hz control loop</p>
+                      <p className="text-[10px] text-muted-foreground">15 Hz control loop</p>
                     </div>
                   </div>
                   <div className="flex justify-end pr-8 mt-1">
@@ -905,7 +905,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
               {[
                 {
                   title: "Overview",
-                  body: "Developed and deployed an autonomous navigation stack for Autonomous Mobile Robots (AMRs) at Robolabs. The AMR's Extended Kalman Filter fuses data from onboard navigation sensors, an IMU, and wheel odometry to produce a robust state estimate, while a monocular camera handles live perception of the field. A* path planning computes optimal routes in real time, while a PID controller executes closed-loop motor commands at 30 Hz with <3 cm position tolerance."
+                  body: "Developed and deployed an autonomous navigation stack for Autonomous Mobile Robots (AMRs) at Robolabs. The AMR's Extended Kalman Filter fuses data from onboard navigation sensors, an IMU, and wheel odometry to produce a robust state estimate, while a binocular camera handles live perception of the field. A* path planning computes optimal routes in real time, while a PID controller executes closed-loop motor commands at 15 Hz with <3 cm position tolerance."
                 },
               ].map(({ title, body }) => (
                 <div key={title}>
