@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Nav } from "@/components/nav";
-import { Mail, Phone, ExternalLink, Code, Cpu, Activity, Bot, Terminal, Github, Linkedin, X } from "lucide-react";
+import { Mail, Phone, ExternalLink, Code, Cpu, Activity, Bot, Terminal, Github, Linkedin, X, ImageIcon } from "lucide-react";
 
 // Replace public/profile.jpg with your own photo to change this image.
 const avatarImage = "/profile.jpg";
@@ -108,7 +108,7 @@ export function Home() {
                   date: "May 2025–Present",
                   bullets: [
                     "Engineered a real-time autonomous mobile robot platform with EKF-based multi-sensor fusion (dual navigation sensors, IMU, and wheel odometry) for continuous 3-DOF pose estimation, paired with A* grid-based path planning with collision avoidance and a Pure Pursuit controller with adaptive speed ramping",
-                    "Built a heterogeneous compute pipeline linking a Jetson Nano (YOLO-based object detection at 15 Hz) to an ARM embedded controller over a custom CRC32-validated serial protocol, with a high-priority receive thread and mutex-protected shared state for real-time data integrity",
+                    "Built a heterogeneous compute pipeline linking a Raspberry Pi (YOLO-based object detection at 15 Hz) to an ARM embedded controller over a custom CRC32-validated serial protocol, with a high-priority receive thread and mutex-protected shared state for real-time data integrity",
                     "Designed a multi-stage object acquisition pipeline driven by a non-blocking FSM coordinating optical sensors and a 4-stage actuator system, including hue-based object classification for selective manipulation",
                     "Currently investigating SLAM-based localization approaches and porting the navigation stack to ROS 2"
                   ],
@@ -124,7 +124,7 @@ export function Home() {
           <SectionHeader title="INTERNSHIPS" />
           <div className="mt-12 space-y-12">
             <CompanyGroup
-              company="Biio, Inc."
+              company="Biio.ai"
               location="San Francisco, CA"
               roles={[
                 {
@@ -168,7 +168,7 @@ export function Home() {
 
             <CompanyGroup
               company="Decibels Lab"
-              location="Bangalore, India"
+              location="Bengaluru, India"
               roles={[
                 {
                   title: "RTL Design Intern",
@@ -178,6 +178,72 @@ export function Home() {
                     "Timing analysis, constraint validation using check_timing and report_clocks"
                   ],
                   skills: ["RTL Design", "FPGA Development", "Xilinx Vivado", "Static Timing Analysis"]
+                }
+              ]}
+            />
+
+            {/* Business & marketing internship */}
+            <p className="text-xs font-mono text-muted-foreground tracking-wider pt-4">{"// BUSINESS_&_MARKETING"}</p>
+            <CompanyGroup
+              company="iSchoolConnect"
+              location="Mumbai, India (Remote)"
+              roles={[
+                {
+                  title: "Marketing Intern · Regional Community HR Lead",
+                  date: "Jun 2021–Dec 2021",
+                  bullets: [
+                    "Organized and hosted 30+ live events and 2 national-scale events for students pursuing graduate study abroad, partnering with the Partnerships & Events team",
+                    "Led 11 city-based student community teams, 8 across South and West India plus Dubai, Dhaka, and Colombo, each building connections with universities and colleges in its region",
+                    "Recruited and managed 150+ people across these teams, working through 44 functional leads in marketing, HR, partnerships, and data analytics",
+                    "Created and supervised Instagram content aimed at undergraduates planning a master's or PhD abroad",
+                    "Collaborated cross-functionally with Marketing, Data Analytics, and Partnerships teams, contributing to 20%+ month-over-month growth"
+                  ],
+                  skills: ["Event Management", "Community Building", "Team Leadership", "Social Media Marketing", "Recruitment"]
+                },
+                {
+                  title: "HR Intern",
+                  date: "Nov 2020–May 2021",
+                  bullets: [
+                    "Handled recruitment for the city-based student community teams, sourcing and bringing on new members as the network grew",
+                    "Planned and hosted team-building events to keep community teams engaged and connected",
+                    "Promoted to Regional Community HR Lead after 7 months"
+                  ],
+                  skills: ["Recruitment", "Team Building", "Event Planning"]
+                }
+              ]}
+            />
+          </div>
+        </section>
+
+        {/* Talks & Outreach Section */}
+        <section id="talks" className="py-24 border-t border-border">
+          <SectionHeader title="TALKS_&_OUTREACH" />
+          <div className="mt-12 space-y-12">
+            <CompanyGroup
+              company="Robolabs Summer Academy"
+              location="UC Berkeley · Berkeley, CA"
+              roles={[
+                {
+                  title: "Speaker — \"How Autonomous Robots See, Think, and Move\"",
+                  date: "Jul 2026",
+                  bullets: [
+                    "Invited back as a returning speaker to present the autonomous robot I engineered, end to end, to nearly 30 high school students",
+                    "Walked through how the robot uses computer vision and sensor fusion to perceive its surroundings, plan paths, and make decisions on its own",
+                    "Built on the previous year's CNN and object detection fundamentals to connect theory to a working real-world system"
+                  ],
+                  skills: ["Public Speaking", "Technical Storytelling", "Product Demo"],
+                  photos: [
+                    { src: "/ucbtalk.jpg", caption: "Presenting at Robolabs Summer Academy 2026, UC Berkeley" }
+                  ]
+                },
+                {
+                  title: "Speaker — \"How Machines See: Computer Vision and Object Detection\"",
+                  date: "Jul 2025",
+                  bullets: [
+                    "Introduced 20+ high school students with no technical background to convolution, CNNs, and the basics of object detection",
+                    "Turned core computer vision concepts into intuitive, visual explanations for a first-time audience"
+                  ],
+                  skills: ["Public Speaking", "Computer Vision", "STEM Outreach"]
                 }
               ]}
             />
@@ -352,7 +418,7 @@ export function Home() {
             <div>
               <p className="font-mono text-xs text-muted-foreground tracking-widest mb-4">// NAVIGATE</p>
               <div className="grid grid-cols-2 gap-y-3 gap-x-4">
-                {(["about", "experience", "internships", "education", "projects", "skills"] as const).map((id) => (
+                {(["about", "experience", "internships", "talks", "education", "projects", "skills"] as const).map((id) => (
                   <button
                     key={id}
                     onClick={() => { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: "smooth" }); }}
@@ -556,6 +622,7 @@ interface Role {
   date: string;
   bullets: string[];
   skills: string[];
+  photos?: { src?: string; caption: string }[];
 }
 
 function CompanyGroup({ company, location, roles, onReadMore }: { company: string; location: string; roles: Role[]; onReadMore?: () => void }) {
@@ -593,6 +660,22 @@ function CompanyGroup({ company, location, roles, onReadMore }: { company: strin
                 </li>
               ))}
             </ul>
+            {role.photos && (
+              <div className={`grid gap-3 mb-4 ${role.photos.length === 1 ? "grid-cols-1 max-w-xl" : "grid-cols-1 sm:grid-cols-3"}`}>
+                {role.photos.map((photo, p) => (
+                  <figure key={p} className="space-y-1.5">
+                    {photo.src ? (
+                      <img src={photo.src} alt={photo.caption} loading="lazy" className="aspect-[4/3] w-full object-cover rounded-sm border border-border" />
+                    ) : (
+                      <div className="aspect-[4/3] w-full rounded-sm border border-dashed border-border bg-muted/20 flex items-center justify-center">
+                        <ImageIcon className="w-6 h-6 text-muted-foreground/50" />
+                      </div>
+                    )}
+                    <figcaption className="text-xs font-mono text-muted-foreground">{photo.caption}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            )}
             <div className="flex flex-wrap gap-2">
               {role.skills.map((skill, k) => (
                 <span key={k} className="px-2 py-1 text-xs font-mono border border-border bg-background text-muted-foreground rounded-sm">
@@ -821,7 +904,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
     { label: "POSITION TOLERANCE", value: "<3", unit: "cm" },
   ];
 
-  const stack = ["C++ · Full System", "NVIDIA Jetson Nano", "YOLO Object Detection", "Extended Kalman Filter", "A* Path Planning", "Pure Pursuit", "PID Control", "CRC32 Serial Protocol", "Multithreading"];
+  const stack = ["C++ · Full System", "Raspberry Pi 5", "YOLO Object Detection", "Extended Kalman Filter", "A* Path Planning", "Pure Pursuit", "PID Control", "CRC32 Serial Protocol", "Multithreading"];
 
   return (
     <AnimatePresence>
@@ -881,7 +964,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
                   <p className="text-center text-muted-foreground/50 mb-2">Serial (CRC32)</p>
                   <div className="flex items-start justify-center gap-6">
                     <div className="border border-border/60 rounded-sm p-2.5 text-center min-w-[130px]">
-                      <p className="text-foreground text-[11px] font-semibold mb-1">Jetson Nano</p>
+                      <p className="text-foreground text-[11px] font-semibold mb-1">Raspberry Pi 5</p>
                       <p className="text-[10px] text-primary">YOLO Detection</p>
                       <p className="text-[10px] text-muted-foreground">~15 Hz · 6 targets</p>
                     </div>
@@ -1043,11 +1126,11 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
               {[
                 {
                   title: "Vision Pipeline",
-                  body: "YOLOv8 runs on the Jetson Nano GPU at ~15 Hz, detecting up to 6 targets per frame. Bounding box centroids are projected into world coordinates using camera intrinsics and navigation sensor altitude, then serialized over CRC32-validated serial packets to the ARM controller for target approach sequencing."
+                  body: "YOLOv8 runs on the Raspberry Pi 5 at ~15 Hz, detecting up to 6 targets per frame. Bounding box centroids are projected into world coordinates using camera intrinsics and navigation sensor altitude, then serialized over CRC32-validated serial packets to the ARM controller for target approach sequencing."
                 },
                 {
                   title: "Communication",
-                  body: "A custom CRC32-protected serial protocol (UART) links the Jetson Nano to the ARM embedded controller. Multi-threaded design decouples vision inference, state estimation, and actuation to avoid pipeline stalls. End-to-end system latency reduced by 40% vs. prior single-threaded architecture."
+                  body: "A custom CRC32-protected serial protocol (UART) links the Raspberry Pi to the ARM embedded controller. Multi-threaded design decouples vision inference, state estimation, and actuation to avoid pipeline stalls. End-to-end system latency reduced by 40% vs. prior single-threaded architecture."
                 },
               ].map(({ title, body }) => (
                 <div key={title}>
@@ -1062,7 +1145,7 @@ function RobolabsDetailModal({ open, onClose }: { open: boolean; onClose: () => 
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">THE PROBLEM</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  The Jetson Nano sends vision data to the ARM embedded controller over a physical serial wire, and that wire runs through the same chassis as the drive motors and other switching electronics. Every one of those components throws off electromagnetic interference when it switches on or off, and that interference can induce small voltage spikes on nearby wires. A spike at the wrong moment flips a bit, a zero becomes a one, and the AMR ends up trying to navigate toward coordinates that were never actually sent. The serial link itself has no built in protection against this. Bytes just arrive and get accepted, so without a way to verify the data, corruption would go unnoticed until the AMR acted on it.
+                  The Raspberry Pi sends vision data to the ARM embedded controller over a physical serial wire, and that wire runs through the same chassis as the drive motors and other switching electronics. Every one of those components throws off electromagnetic interference when it switches on or off, and that interference can induce small voltage spikes on nearby wires. A spike at the wrong moment flips a bit, a zero becomes a one, and the AMR ends up trying to navigate toward coordinates that were never actually sent. The serial link itself has no built in protection against this. Bytes just arrive and get accepted, so without a way to verify the data, corruption would go unnoticed until the AMR acted on it.
                 </p>
 
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">HOW IT WORKS</p>
