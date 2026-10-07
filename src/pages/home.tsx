@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Nav } from "@/components/nav";
-import { Mail, Phone, ExternalLink, Code, Cpu, Activity, Bot, Terminal, Github, Linkedin, X, ImageIcon } from "lucide-react";
+import { Mail, Phone, ExternalLink, Code, Cpu, Activity, Bot, Terminal, Github, Linkedin, X, ImageIcon, Users } from "lucide-react";
 
 // Replace public/profile.jpg with your own photo to change this image.
 const avatarImage = "/profile.jpg";
@@ -45,7 +45,7 @@ export function Home() {
             
             <div className="flex flex-wrap gap-4">
               <button onClick={() => setContactOpen(true)} className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground hover:bg-primary/90 font-medium transition-colors cursor-pointer rounded-sm">
-                INITIALIZE CONTACT <ChevronRightIcon className="w-4 h-4" />
+                GET IN TOUCH <ChevronRightIcon className="w-4 h-4" />
               </button>
               <button onClick={() => setCvOpen(true)} className="inline-flex items-center gap-2 px-6 py-3 bg-secondary text-secondary-foreground hover:bg-secondary/80 font-medium transition-colors border border-border cursor-pointer rounded-sm">
                 RESUME
@@ -70,6 +70,9 @@ export function Home() {
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
                 Proven track record deploying object detection, PID-based motor control, and A* path planning in dynamic environments. Background spans RTL/FPGA design, embedded firmware, and systems-level hardware-software integration.
+              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed mt-6">
+                Beyond building systems, I enjoy explaining them. I've presented my robotics work to student audiences at UC Berkeley two years running, and previously led 11 regional community teams of 150+ people at an edtech company.
               </p>
             </motion.div>
             
@@ -372,6 +375,12 @@ export function Home() {
               icon={<Terminal className="text-primary w-5 h-5" />}
               skills={["Git", "VS Code", "Linux", "Cadence Virtuoso", "Xilinx Vivado"]}
             />
+            <SkillCategory
+              title="Communication & Leadership"
+              icon={<Users className="text-primary w-5 h-5" />}
+              skills={["Technical Presentations", "Cross-functional Collaboration", "Team Leadership", "Recruiting", "Event Management", "Community Building"]}
+              className="md:col-span-2"
+            />
           </div>
         </section>
 
@@ -448,7 +457,7 @@ export function Home() {
                 onClick={() => setContactOpen(true)}
                 className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 font-mono font-bold text-xs hover:bg-primary/90 transition-colors rounded-sm"
               >
-                INITIALIZE CONTACT <ExternalLink className="w-3 h-3" />
+                GET IN TOUCH <ExternalLink className="w-3 h-3" />
               </button>
             </div>
           </div>
@@ -730,13 +739,13 @@ function EducationCard({ school, degree, date, location, gpa, courses, logo }: a
   );
 }
 
-function SkillCategory({ title, icon, skills }: any) {
+function SkillCategory({ title, icon, skills, className = "" }: any) {
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      className="p-6 border border-border bg-card rounded-sm"
+      className={`p-6 border border-border bg-card rounded-sm ${className}`}
     >
       <div className="flex items-center gap-3 mb-6">
         {icon}
