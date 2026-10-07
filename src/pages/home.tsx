@@ -84,7 +84,7 @@ export function Home() {
                 <img 
                   src={avatarImage} 
                   alt="Avatar" 
-                  className="relative z-10 w-full h-auto block rounded-sm border border-border bg-card filter grayscale hover:grayscale-0 transition-all duration-500"
+                  className="relative z-10 w-full h-auto block rounded-sm border border-border bg-card"
                 />
                 <div className="absolute inset-0 border border-primary/30 rounded-sm transform translate-x-4 translate-y-4 pointer-events-none"></div>
                 <div className="absolute inset-0 border border-primary/10 rounded-sm transform -translate-x-4 -translate-y-4 pointer-events-none"></div>
