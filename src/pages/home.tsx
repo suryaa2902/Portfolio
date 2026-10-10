@@ -86,7 +86,7 @@ export function Home() {
               <div className="relative w-64 md:w-80">
                 <img 
                   src={avatarImage} 
-                  alt="Avatar" 
+                  alt="Suryaa Senthilkumar Shanthi" 
                   className="relative z-10 w-full h-auto block rounded-sm border border-border bg-card"
                 />
                 <div className="absolute inset-0 border border-primary/30 rounded-sm transform translate-x-4 translate-y-4 pointer-events-none"></div>
