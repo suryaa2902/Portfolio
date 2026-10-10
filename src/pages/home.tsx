@@ -403,8 +403,12 @@ export function Home() {
           >
             <h3 className="text-xl font-bold mb-2">Ultrasound Image Analysis of Carotid Artery</h3>
             <p className="text-muted-foreground mb-4 font-mono text-sm">IEEE International Conference of Computing and Communication Technologies (ICCCT), 2025</p>
-            <p className="text-sm text-muted-foreground mb-6">
+            <p className="text-sm text-muted-foreground mb-4">
               <span className="text-foreground">Authors:</span> S S Suryaa, Srinivas Raman S, Ajay Prakash K, Dr. S. Latha, Dr. P. Muthu
+            </p>
+            <p className="text-sm text-foreground/80 leading-relaxed mb-6">
+              <span className="text-[10px] font-mono text-primary tracking-wider mr-2">IN PLAIN TERMS</span>
+              Uses image-processing techniques to pick out the artery wall in ultrasound scans of the neck, the first step toward measuring its thickness, an early warning sign of stroke risk.
             </p>
             <a 
               href="https://ieeexplore.ieee.org/document/11019420" 
