@@ -291,6 +291,7 @@ export function Home() {
                   subtitle="Georgia Tech"
                   date="Mar–Apr 2024"
                   description="Extended Krittika with 11 new SIMD-based non-linear activation functions (GeLU, Swish, Mish, Sigmoid). Set up RISC-V simulation with Rocket Core, GNU Toolchain, Spike ISA Simulator."
+                  plain="Lets hardware designers predict how modern AI models would perform on a custom AI chip before it is built."
                   tags={["RISC-V", "GNU Toolchain", "C", "SIMD Profiling", "Deep Learning Accelerators"]}
                   onReadMore={() => setKrittikaReportOpen(true)}
                 />
@@ -299,6 +300,7 @@ export function Home() {
                   subtitle="Georgia Tech"
                   date="Oct–Dec 2023"
                   description="Designed 16×4 SRAM array using 6T SRAM cell in Cadence Virtuoso. Array power: 1.2mW at 800mV."
+                  plain="A small block of the fast memory found inside every processor, designed at the transistor level and tuned for low power."
                   tags={["Cadence Virtuoso", "SRAM Memory Design", "Analog Circuit Design", "Verilog", "Xilinx Vivado"]}
                   githubUrl="https://github.com/suryaa2902/512-bit-SRAM"
                   onReadMore={() => setSramDetailOpen(true)}
@@ -308,6 +310,7 @@ export function Home() {
                   subtitle="Georgia Tech"
                   date="Nov 2022"
                   description="Multi-level cache hierarchy (private L1, shared L2), DRAM model with 16 banks. Up to 30% reduction in average memory access time."
+                  plain="Models how multi-core computers share their fastest memory, showing which setups make programs run quicker."
                   tags={["C++", "Cache Architecture", "DRAM Modeling", "Cache Coherency", "Memory Hierarchy"]}
                   githubUrl="https://github.com/suryaa2902/Cache-Partitioning-for-Multi-Level-System"
                   onReadMore={() => setCacheDetailOpen(true)}
@@ -317,6 +320,7 @@ export function Home() {
                   subtitle="Georgia Tech"
                   date="Oct–Nov 2022"
                   description="Superscalar processor pipeline in C++ with register renaming (RAT + ROB). Average CPI: 1.033 across diverse benchmarks."
+                  plain="A software model of how modern processors run several instructions at once, and out of order, to go faster without getting results wrong."
                   tags={["C++", "Computer Architecture", "Tomasulo Algorithm"]}
                   githubUrl="https://github.com/suryaa2902/Out-of-Order-Pipeline-with-In-Order-Commit"
                   onReadMore={() => setOooDetailOpen(true)}
@@ -326,6 +330,7 @@ export function Home() {
                   subtitle="Georgia Tech"
                   date="Oct–Nov 2022"
                   description="C++ I2C driver for SparkFun Qwiic ENS160 air quality sensor; LCD display for AQI, CO2, TVOC."
+                  plain="Software that lets a small computer read an air-quality sensor and show live readings on a screen."
                   tags={["C++", "I2C", "Embedded Systems"]}
                   githubUrl="https://github.com/suryaa2902/Cpp-Driver-for-ENS160"
                 />
@@ -334,6 +339,7 @@ export function Home() {
                   subtitle="Georgia Tech"
                   date="Aug–Sep 2022"
                   description="GShare, Bimodal, Always Taken predictors with Global History Table. 20% reduction in branch mispredictions."
+                  plain="Models how processors guess what a program will do next so they never have to wait. Better guesses mean faster chips."
                   tags={["C++", "Branch Prediction", "Computer Architecture", "Verilog", "Xilinx Vivado", "RTL"]}
                   githubUrl="https://github.com/suryaa2902/5-Stage-Superscalar-Pipeline"
                   githubUrl2="https://github.com/suryaa2902/Superscalar-Pipeline-in-Verilog"
@@ -344,6 +350,7 @@ export function Home() {
                   subtitle="Georgia Tech"
                   date="Sep 2022"
                   description="Faithful recreation of the classic Pacman arcade game built in C++. Features ghost AI, collision detection, score tracking, and all classic game mechanics."
+                  plain="A fully playable game built from scratch, showing core programming skills like real-time logic and simple game AI."
                   tags={["C++", "Game Development", "SFML"]}
                   githubUrl="https://github.com/suryaa2902/Pacman"
                 />
@@ -766,7 +773,7 @@ function SkillCategory({ title, icon, skills, className = "" }: any) {
   );
 }
 
-function GridProjectCard({ title, subtitle, date, description, tags, githubUrl, githubUrl2, inProgress, onReadMore }: any) {
+function GridProjectCard({ title, subtitle, date, description, plain, tags, githubUrl, githubUrl2, inProgress, onReadMore }: any) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -784,7 +791,15 @@ function GridProjectCard({ title, subtitle, date, description, tags, githubUrl, 
         <span className="text-xs font-mono text-primary shrink-0">{date}</span>
       </div>
       <p className="text-xs text-muted-foreground font-mono mb-2">{subtitle}</p>
-      <p className="text-sm text-muted-foreground leading-relaxed flex-1">{description}</p>
+      <div className="flex-1">
+        <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+        {plain && (
+          <p className="text-sm text-foreground/80 leading-relaxed mt-3">
+            <span className="text-[10px] font-mono text-primary tracking-wider mr-2">IN PLAIN TERMS</span>
+            {plain}
+          </p>
+        )}
+      </div>
       <div className="flex flex-wrap items-center justify-between gap-2 pt-3 mt-3 border-t border-border">
         <div className="flex flex-wrap gap-x-2 gap-y-1">
           {tags.map((tag: string, i: number) => (
