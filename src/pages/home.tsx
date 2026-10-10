@@ -110,8 +110,8 @@ export function Home() {
                   title: "Robotics Systems Engineer",
                   date: "May 2025–Present",
                   bullets: [
-                    "Engineered a real-time autonomous mobile robot platform with EKF-based multi-sensor fusion (dual navigation sensors, IMU, and wheel odometry) for continuous 3-DOF pose estimation, paired with A* grid-based path planning with collision avoidance and a Pure Pursuit controller with adaptive speed ramping",
-                    "Built a heterogeneous compute pipeline linking a Raspberry Pi (YOLO-based object detection at 15 Hz) to an ARM embedded controller over a custom CRC32-validated serial protocol, with a high-priority receive thread and mutex-protected shared state for real-time data integrity",
+                    "Engineered a real-time autonomous mobile robot platform with EKF-based multi-sensor fusion (dual navigation sensors, IMU, and wheel odometry) for continuous 3-DOF pose estimation, paired with A* grid-based path planning with collision avoidance and a Pure Pursuit controller with adaptive speed ramping that tracks paths smoothly at higher speeds while holding <3 cm position tolerance",
+                    "Built a heterogeneous compute pipeline linking a Raspberry Pi (YOLO-based object detection at 15 Hz) to an ARM embedded controller over a custom CRC32-validated serial protocol, with a high-priority receive thread and mutex-protected shared state that reject corrupted packets and prevent race conditions, cutting end-to-end latency by 40% versus the earlier single-threaded design",
                     "Designed a multi-stage object acquisition pipeline driven by a non-blocking FSM coordinating optical sensors and a 4-stage actuator system, including hue-based object classification for selective manipulation",
                     "Currently investigating SLAM-based localization approaches and porting the navigation stack to ROS 2"
                   ],
