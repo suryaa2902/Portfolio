@@ -7,8 +7,46 @@ import { Home } from "@/pages/home";
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { Analytics } from "@vercel/analytics/react";
+import { pageview } from "@vercel/analytics";
 
 const queryClient = new QueryClient();
+
+// Reports each section as a virtual page view the first time a visitor
+// settles on it, so analytics can show how far people read.
+function SectionViewTracker() {
+  useEffect(() => {
+    const seen = new Set<string>();
+    const timers = new Map<string, number>();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const id = entry.target.id;
+          if (seen.has(id)) continue;
+          if (entry.isIntersecting) {
+            // Wait a second so sections scrolled past on the way elsewhere don't count
+            timers.set(id, window.setTimeout(() => {
+              seen.add(id);
+              observer.unobserve(entry.target);
+              pageview({ route: `/${id}`, path: `/${id}` });
+            }, 1000));
+          } else {
+            window.clearTimeout(timers.get(id));
+          }
+        }
+      },
+      { rootMargin: "-45% 0px -45% 0px" }
+    );
+
+    document.querySelectorAll("section[id]:not(#home)").forEach((el) => observer.observe(el));
+    return () => {
+      observer.disconnect();
+      timers.forEach((t) => window.clearTimeout(t));
+    };
+  }, []);
+
+  return null;
+}
 
 function Router() {
   return (
@@ -70,6 +108,7 @@ function App() {
         </WouterRouter>
         <Toaster />
         <Analytics />
+        <SectionViewTracker />
       </TooltipProvider>
     </QueryClientProvider>
   );

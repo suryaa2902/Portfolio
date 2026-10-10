@@ -392,7 +392,7 @@ export function Home() {
         </section>
 
         {/* Publications Section */}
-        <section className="py-24 border-t border-border">
+        <section id="publications" className="py-24 border-t border-border">
           <SectionHeader title="PUBLICATIONS" />
           
           <motion.div 
